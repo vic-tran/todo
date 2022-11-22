@@ -15,6 +15,11 @@ import Todo from "./Todo";
 function App() {
   const [todos, setTodos] = useState(['Apply to jobs', 'Build projects'])
 
+//create todo
+//read todo from firebase
+//update todo from firebase
+//delete todo
+
   return (
     <div className={style.bg}>
       <div className={style.container}>
