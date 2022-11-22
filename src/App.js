@@ -1,6 +1,8 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import Todo from "./Todo";
+import {db} from './firebase'
+import {query, collection, onSnapshot} from 'firebase/firestore'
 
   const style = {
     bg: `h-screen w-screen p-4 bg-gradient-to-r from-[#EB6440] to-[#497174]`,
@@ -10,13 +12,26 @@ import Todo from "./Todo";
     input: `border p-2 w-full text-xl`,
     button: `border p-4 ml-2 bg-green-300 text-slate-100`,
     count: `text-center p-2`,
-  }
+  };
 
 function App() {
-  const [todos, setTodos] = useState(['Apply to jobs', 'Build projects'])
+  const [todos, setTodos] = useState([]);
+
 
 //create todo
 //read todo from firebase
+useEffect(()=>{
+  const q = query(collection(db, 'todos'))
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    let todosArr = []
+    querySnapshot.forEach((doc) => {
+      todosArr.push({...doc.data(), id: doc.id})
+    });
+    setTodos(todosArr)
+  })
+  return () => unsubscribe()
+},[])
+
 //update todo from firebase
 //delete todo
 
@@ -32,7 +47,7 @@ function App() {
         </form>
         <ul>
           {todos.map((todo, index) =>(
-            <Todo key={index} todo={todo}/>
+            <Todo key={index} todo={todo} />
           ))}
         </ul>
         <p className={style.count}>You have 2 todo(s)</p>
