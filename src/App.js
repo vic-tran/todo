@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import Todo from "./Todo";
 import {db} from './firebase'
-import {query, collection, onSnapshot, updateDoc, doc} from 'firebase/firestore'
+import {query, collection, onSnapshot, updateDoc, doc, addDoc} from 'firebase/firestore'
 
   const style = {
     bg: `h-screen w-screen p-4 bg-gradient-to-r from-[#EB6440] to-[#497174]`,
@@ -16,10 +16,27 @@ import {query, collection, onSnapshot, updateDoc, doc} from 'firebase/firestore'
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [input, setInput] = useState('');
+  
 
 
-//create todo
+//create todo + add check statement + set input back to default state after change
+
+const createTodo = async(e) => {
+  e.preventDefault(e)
+  if(input === '') {
+    alert('Please enter a valid todo')
+    return
+  }
+  await addDoc(collection(db, 'todos'), {
+  text: input,
+  completed: false,
+  })
+  setInput('')
+}
+
 //read todo from firebase
+
 useEffect(()=>{
   const q = query(collection(db, 'todos'))
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -48,8 +65,14 @@ const toggleComplete = async (todo) => {
         <h3 className={style.heading}>
           Todo App
         </h3>
-        <form className={style.form}>
-          <input className={style.input} type="text" placeholder='Add todo'></input>
+        <form onSubmit={createTodo} className={style.form}>
+          <input 
+            value={input} 
+            onChange={(e) => setInput(e.target.value)} 
+            className={style.input} 
+            type="text" 
+            placeholder='Add todo'
+            />
           <button className={style.button}><AiOutlinePlus size={30}/></button>
         </form>
         <ul>
@@ -57,7 +80,9 @@ const toggleComplete = async (todo) => {
             <Todo key={index} todo={todo} toggleComplete={toggleComplete} />
           ))}
         </ul>
-        <p className={style.count}>You have 2 todo(s)</p>
+
+        {todos.length < 1 ? null : <p className={style.count}>{`You have ${todos.length} todo(s)`}</p>}
+        
       </div>
     </div>
   );
