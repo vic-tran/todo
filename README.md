@@ -1,6 +1,10 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). 
+
+Todo List App ~
+  Simple CRUD app with firebase backend. 
+  Using tailwind CSS for styling. 
 
 ## Available Scripts
 
